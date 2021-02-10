@@ -92,7 +92,7 @@ ggplot(supermarkets) +
 
 
 ### Landuse
-The data for landuse in Hamburg is provided in the repo as a sf-dataframe. 
+The data for landuse in Hamburg is provided in the repo as a sf-dataframe. The landuse data was extracted from a shapefile available on the [geofabrik download server](https://download.geofabrik.de/europe/germany/hamburg.html).
 
 
 ```R
