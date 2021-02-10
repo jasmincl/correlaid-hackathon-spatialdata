@@ -27,3 +27,81 @@ For this hackathon an extract of the first two weeks of August 2016 in Hamburg i
 Additionally, a data set of all 208 stations, their unique identifier, their name and latitude and longitude can be found in "bikeshare_stations_hh.csv".
 
 More information about the original data set can be found [here (German only)](https://data.deutschebahn.com/dataset/data-call-a-bike).
+
+## Getting OpenStreetMap Data
+
+### R: [osmdata](https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html)
+osmdata is a useful R-package for simple osm-queries. Check out the code below for some examples (see the documentation linked above for more info).
+
+```R
+library(osmdata)
+library(dplyr)
+library(sf)
+library(leaflet)
+library(ggplot2)
+
+
+# check available tags (sub categories)  inside keys ----------------------
+available_features()
+available_tags("amenity")
+available_tags("shop")
+available_tags("highway")
+
+check <- readRDS("landusedf.rds")
+glimpse(check)
+
+# get all traffic lights in Hamburg --------------------------------------
+## highway also includes bus stops, for example
+query_traffic_signal <- getbb('Hamburg') %>%
+  opq() %>% 
+  add_osm_feature(key = 'highway', value = 'traffic_signals') %>% 
+  osmdata_sf()
+
+# extract points only
+traffic_lights <- query_traffic_signal$osm_points
+
+# plot
+ggplot(landuse_sf) +
+  geom_sf()
+
+
+# get all cinemas in Hamburg ----------------------------------------------
+query_cinema <- opq(bbox = 'Hamburg') %>%
+  add_osm_feature(key = 'amenity', value = 'cinema') %>% 
+  osmdata_sf()
+
+# extract points only
+cinemas <- query_cinemas$osm_points
+
+# plot
+ggplot(cinemas) +
+  geom_sf()
+
+# get all supermarkets in Hamburg ----------------------------------------
+query_supermarket <- opq(bbox = 'Hamburg') %>%
+  add_osm_feature(key = 'shop', value = 'supermarket') %>% 
+  osmdata_sf()
+
+# extract points only
+supermarkets <- query_supermarket$osm_points
+
+# plot
+ggplot(supermarkets) +
+  geom_sf()
+```
+
+
+### Landuse
+The data for landuse in Hamburg is provided in the repo as a sf-dataframe. 
+
+
+```R
+# read in landuse for Hamburg
+landuse_sf <- readRDS("data/landuse_sf.rds")
+
+ggplot(landuse_sf) +
+  geom_sf(aes(color=fclass))
+```
+
+
+### Python: [osmnx](https://osmnx.readthedocs.io/en/stable/)
