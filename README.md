@@ -47,9 +47,6 @@ available_tags("amenity")
 available_tags("shop")
 available_tags("highway")
 
-check <- readRDS("landusedf.rds")
-glimpse(check)
-
 # get all traffic lights in Hamburg --------------------------------------
 ## highway also includes bus stops, for example
 query_traffic_signal <- getbb('Hamburg') %>%
@@ -92,7 +89,7 @@ ggplot(supermarkets) +
 
 
 ### Landuse
-The data for landuse in Hamburg is provided in the repo as a sf-dataframe. The landuse data was extracted from a shapefile available on the [geofabrik download server](https://download.geofabrik.de/europe/germany/hamburg.html).
+The data for landuse in Hamburg is provided as a shapefile  in the repo as a shapefile available on the [geofabrik download server](https://download.geofabrik.de/europe/germany/hamburg.html). For R users, it is also available as a sf-dataframe (landuse.rds).
 
 
 ```R
