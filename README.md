@@ -101,4 +101,53 @@ ggplot(landuse_sf) +
 ```
 
 
-### Python: [osmnx](https://osmnx.readthedocs.io/en/stable/)
+### Python: [osmnx](https://osmnx.readthedocs.io/en/stable/) and [pyrosm](https://pyrosm.readthedocs.io/en/latest/)
+
+Pyrosm and osmnx are both Python libraries that can be used to extract openstreetmap data (and do other things). 
+
+Pyrosm makes use of .pbf-files it gets from places like geofabrik. In its [docs](https://pyrosm.readthedocs.io/en/latest/) there is quite a few examples how to get different kinds of data.
+
+Here are a few examples for Hamburg: 
+
+```python
+
+import geopandas as gpd
+from pyrosm import OSM, get_data
+
+# Download data for Hamburg
+fp = get_data("Hamburg")
+
+# need to do this too to actually download it
+print("\nDownload will happen:")
+fp = get_data("Hamburg", update=True)
+print(fp)
+
+# initialize query to data
+osm = OSM(fp)
+
+# EXAMPLES 
+## get bus stops in Hamburg
+busstop_filter = {"highway": ["bus_stop"]}
+busstops = osm.get_pois(custom_filter=busstop_filter)
+
+# get all amenities and shops (like in pyrosm docs)
+custom_filter = {'amenity': True, "shop": True}
+pois = osm.get_pois(custom_filter=custom_filter)
+
+# check which amenity types there are 
+pois.amenity.unique()
+
+# check which shop types there are 
+pois.shop.unique()
+
+# one of the amenities available are restaurants! Filter geodataframe for restaurants
+restaurants = pois[pois.amenity == "restaurant"]
+
+# plot on a map
+ax = restaurants.iloc[0:100,].plot(markersize=3, figsize=(12,12), legend=True, legend_kwds=dict(loc='upper left', ncol=5, bbox_to_anchor=(1, 1)))
+
+```
+
+**osmnx** and its "geometries_from_place" - function also connects directly to the osm API and lets you extract points of interest. 
+
+If those libraries don't work for you, [geofabrik](https://download.geofabrik.de/europe/germany/hamburg.html) has all the data for Hamburg in one file in different formats (shp for example) that can be read in Python using geopandas. dj
